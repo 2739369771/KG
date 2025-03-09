@@ -1,8 +1,21 @@
 <template>
-  <div v-loading="fullscreenLoading" id="BOX-SVG" class="BOX-SVG" :style="styles">
-    <div id="SVG" class="SVG" @click="initContainerLeftClick" @contextmenu.prevent="initContainerRightClick" />
+  <div
+    v-loading="fullscreenLoading"
+    id="BOX-SVG"
+    class="BOX-SVG"
+    :style="styles"
+  >
+    <div
+      id="SVG"
+      class="SVG"
+      @click="initContainerLeftClick"
+      @contextmenu.prevent="initContainerRightClick"
+    />
     <menuLink ref="menu_link" />
-    <menuBlank ref="menu_blank" @changeCursor="changeCursor" />
+    <menuBlank
+      ref="menu_blank"
+      @changeCursor="changeCursor"
+    />
     <infoCard ref="info_card" />
   </div>
 </template>
@@ -12,7 +25,7 @@ import _ from "lodash";
 import { EventBus } from "@/utils/event-bus.js";
 import menuLink from "@/components/KGBuilderMenuLink";
 import menuBlank from "@/components/KGBuilderMenuBlank";
-import infoCard from "../views/kgbuilder/components/infoCard.vue"
+import infoCard from "../views/kgbuilder/components/infoCard.vue";
 import { kgBuilderApi } from "@/api";
 export default {
   name: "KGBuilder2",
@@ -21,34 +34,34 @@ export default {
     "Dset",
     "createSingleNode",
     "updateCoordinateOfNode",
-    "getNodeDetail"
+    "getNodeDetail",
   ],
   components: {
     menuLink,
     menuBlank,
-    infoCard
+    infoCard,
   },
   props: {
     styles: {
       type: Object,
-      default: () => { }
+      default: () => {},
     },
     initData: {
       type: Object,
-      default: {}
+      default: {},
     },
     ringFunction: {
       type: Array,
-      default: []
+      default: [],
     },
     domain: {
       type: String,
-      default: 0
+      default: 0,
     },
     domainId: {
       type: Number,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
@@ -78,7 +91,7 @@ export default {
         uuid: "",
         cname: "",
         fx: "",
-        fy: ""
+        fy: "",
       },
 
       // d3属性
@@ -96,15 +109,15 @@ export default {
         to: "",
         isDrawing: false,
         defaultEvent: null,
-        container: null
+        container: null,
       },
       graph: {
         nodes: [],
-        links: []
+        links: [],
       },
       widht: null,
       height: null,
-      isAddLink: false
+      isAddLink: false,
     };
   },
   watch: {
@@ -123,24 +136,23 @@ export default {
         this.fullscreenLoading = false;
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     domainId() {
-      console.log('pid', this.domainId)
-    }
+      console.log("pid", this.domainId);
+    },
   },
   mounted() {
     const _this = this;
     _this.$nextTick(() => {
       _this._thisKey(this);
       _this.Dset(d3);
-    console.log("mouted")
+      console.log("mouted");
     });
     EventBus.$on("DIV", (d, x) => {
       this.width = d;
       this.height = x;
       _this.initGraph();
-
     });
   },
   methods: {
@@ -157,7 +169,7 @@ export default {
       let menuBar = {
         left: event.clientX - 140,
         top: event.clientY - 140,
-        show: true
+        show: true,
       };
       _this.$refs.menu_blank.init(menuBar);
       event.preventDefault();
@@ -199,7 +211,7 @@ export default {
           d3
             .forceLink()
             .distance(function (d) {
-              return 200;//60;
+              return 200; //60;
               // return Math.floor(Math.random() * (700 - 200)) ;
             })
             .id(function (d) {
@@ -207,10 +219,12 @@ export default {
             })
         )
         .force("charge", d3.forceManyBody().strength(-1000))
-        .force("collide", d3.forceCollide)
-        .force("center", d3.forceCenter(this.width / 2, this.height / 2))
-        .force('x', d3.forceX().x(500))
-        .force('y', d3.forceY().y(500))
+        .force("collide", d3.forceCollide);
+      // .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+      // .force("x", d3.forceX().x(500))
+      // .force("y", d3.forceY().y(500));
+
+      // .force("center", d3.forceCenter(this.width / 2, this.height / 2))
 
       // .force("charge", d3.forceManyBody().strength(-10000).distanceMax(8000).distanceMin(50))
       // .force("collide", d3.forceCollide().radius(20))
@@ -235,9 +249,6 @@ export default {
       );
       // this.updateGraph();
       this.simulation.alphaTarget(0.1).restart();
-
-
-
     },
     // 更新画布数据
     updateGraph() {
@@ -248,6 +259,117 @@ export default {
       const nodes = this.graph.nodes;
       // console.log("updatefou???   " + JSON.stringify(nodes));
       const links = [];
+
+      // const centerNodes = nodes.filter((n) => n.label === "res_nm");
+      // const centerNodeCount = centerNodes.length;
+      // const gridSize = Math.ceil(Math.sqrt(centerNodeCount)); // 计算网格大小
+      // const spacingX = this.width / (gridSize + 1);
+      // const spacingY = this.height / (gridSize + 1);
+      // const jitterX = spacingX * 0.4; // X 方向最大偏移 40%
+      // const jitterY = spacingY * 0.4; // Y 方向最大偏移 40%
+
+      // centerNodes.forEach((node, index) => {
+      //   const row = Math.floor(index / gridSize);
+      //   const col = index % gridSize;
+      //   node.fx = spacingX * (col + 1) + (Math.random() - 0.5) * jitterX;
+      //   node.fy = spacingY * (row + 1) + (Math.random() - 0.5) * jitterY;
+      // });
+
+      // const centerNodes = nodes.filter((n) => n.label === "res_nm");
+      // const centerNodeCount = centerNodes.length;
+      // const centerX = this.width / 2;
+      // const centerY = this.height / 2;
+      // const maxRadius = Math.min(this.width, this.height) / 3; // 最大半径
+
+      // const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // 137.5° (黄金角度)
+
+      // centerNodes.forEach((node, i) => {
+      //   const r = maxRadius * Math.sqrt(i / centerNodeCount); // 采用平方根比例分布
+      //   const theta = i * goldenAngle; // 使用黄金角度分布
+
+      //   node.fx = centerX + r * Math.cos(theta);
+      //   node.fy = centerY + r * Math.sin(theta);
+      // });
+
+      const centerNodes = nodes.filter((n) => n.label === "res_nm");
+      const centerX = this.width / 2;
+      const centerY = this.height / 2;
+
+      const minSpacing = 250; //  增加最小间距，避免重叠
+      const maxRadius = Math.min(this.width, this.height) / 2;
+      const totalNodes = centerNodes.length;
+
+      let placedNodes = [];
+
+      for (let i = 0; i < totalNodes; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        let radius = Math.sqrt(i) * minSpacing + Math.random() * 50; // 半径递增
+        radius = Math.min(radius, maxRadius);
+
+        let x = centerX + radius * Math.cos(angle);
+        let y = centerY + radius * Math.sin(angle);
+
+        placedNodes.push({ x, y });
+      }
+
+      function resolveOverlaps() {
+        let maxIterations = 50; //  增加迭代次数
+        let moved = true;
+
+        // 迭代处理重叠
+        for (let iter = 0; iter < maxIterations && moved; iter++) {
+          moved = false;
+
+          for (let i = 0; i < placedNodes.length; i++) {
+            for (let j = i + 1; j < placedNodes.length; j++) {
+              let dx = placedNodes[j].x - placedNodes[i].x;
+              let dy = placedNodes[j].y - placedNodes[i].y;
+              let dist = Math.hypot(dx, dy);
+
+              if (dist < minSpacing) {
+                //  发生重叠，调整位置
+                let pushX = (dx / dist) * (minSpacing - dist) * 0.5;
+                let pushY = (dy / dist) * (minSpacing - dist) * 0.5;
+
+                // 移动节点以消除重叠
+                placedNodes[i].x -= pushX;
+                placedNodes[i].y -= pushY;
+                placedNodes[j].x += pushX;
+                placedNodes[j].y += pushY;
+
+                moved = true; // 标记移动
+              }
+            }
+          }
+        }
+      }
+
+      function adjustDensity() {
+        // 遍历每个节点，检查周围的节点密度
+        for (let i = 0; i < placedNodes.length; i++) {
+          let node = placedNodes[i];
+          let neighbors = placedNodes.filter(
+            (p) => Math.hypot(p.x - node.x, p.y - node.y) < minSpacing * 1.5
+          );
+
+          // 如果一个节点的邻居太多，随机扰动位置以减少拥挤
+          if (neighbors.length > 6) {
+            node.x += (Math.random() - 0.5) * 20;
+            node.y += (Math.random() - 0.5) * 20;
+          }
+        }
+      }
+
+      resolveOverlaps(); // 执行碰撞检测和位置调整
+      adjustDensity(); // 进一步优化局部密度
+
+      centerNodes.forEach((node, index) => {
+        if (placedNodes[index]) {
+          node.fx = placedNodes[index].x;
+          node.fy = placedNodes[index].y;
+        }
+      });
+
       nodes.forEach(function (n) {
         // if(this.first==1)
         // {
@@ -292,11 +414,11 @@ export default {
         _.each(links, function (link) {
           const same = _.filter(links, {
             source: link.source,
-            target: link.target
+            target: link.target,
           });
           const sameAlt = _.filter(links, {
             source: link.target,
-            target: link.source
+            target: link.source,
           });
           const sameAll = same.concat(sameAlt);
           _.each(sameAll, function (s, i) {
@@ -350,11 +472,11 @@ export default {
       // 更新节点
       this.nodeGroup.selectAll(".node >g").remove();
       let node = this.nodeGroup.selectAll(".node >g").data(nodes);
-      console.log("353",node)
+      console.log("353", node);
       node.exit().remove();
       const nodeEnter = this.drawNode(node);
       node = nodeEnter.merge(node);
-      console.log("357",node)
+      console.log("357", node);
       // 更新节点文字
       this.nodeTextGroup.selectAll(".nodeText >g").remove();
       let nodeText = this.nodeTextGroup.selectAll(".nodeText >g").data(nodes);
@@ -370,7 +492,7 @@ export default {
       nodeSymbol.exit().remove();
       const nodeSymbolEnter = this.drawNodeSymbol(nodeSymbol);
       nodeSymbol = nodeSymbolEnter.merge(nodeSymbol);
-      nodeSymbol.attr("fill", d => {
+      nodeSymbol.attr("fill", (d) => {
         if (d.color) {
           return d.color;
         }
@@ -471,7 +593,7 @@ export default {
       // 计算出最小和最大的X，Y
       // 去除拖拽跳动问题
       if (this.scale == null) {
-        this.graph.nodes.filter(res => res.uuid);
+        this.graph.nodes.filter((res) => res.uuid);
         const xExtent = d3.extent(d3.values(this.graph.nodes), function (n) {
           return n.x;
         });
@@ -605,10 +727,7 @@ export default {
         });
       let innerR = parseInt(m.r) + 40 * level;
       let ountR = parseInt(m.r) + 40 * (level + 1);
-      const arc = d3
-        .arc()
-        .innerRadius(innerR)
-        .outerRadius(ountR);
+      const arc = d3.arc().innerRadius(innerR).outerRadius(ountR);
       buttonEnter
         .append("path")
         .attr("d", function (d) {
@@ -741,7 +860,7 @@ export default {
         }
       });
 
-      //按钮显示处理按钮显示处理
+      //按钮显示处理
       for (let i = 0; i < actionIndex; i++) {
         for (let j = 0; j < actionIndex; j++) {
           //menu_1_level_1_pAction_0_action_0
@@ -824,36 +943,56 @@ export default {
       let moveNodes = [];
       moveNodes.push({ uuid: d.uuid, fx: d.fx, fy: d.fy });
       let relevantNodes = this.graph.links
-        .filter(n => n.sourceId == d.uuid)
-        .map(m => m.targetId);
+        .filter((n) => n.sourceId == d.uuid)
+        .map((m) => m.targetId);
       let arr = []; //去重复后的新数组
       arr = relevantNodes.filter((element, index, self) => {
         return self.indexOf(element) === index;
       });
       if (arr && arr.length > 0) {
-        arr.forEach(targetId => {
+        arr.forEach((targetId) => {
           let targetNodes = this.graph.nodes
-            .filter(n => n.uuid == targetId)
-            .map(m => {
-              let item = {uuid: m.uuid, fx: m.x, fy: m.y};
+            .filter((n) => n.uuid == targetId)
+            .map((m) => {
+              let item = { uuid: m.uuid, fx: m.x, fy: m.y };
               return item;
             });
           moveNodes = moveNodes.concat(targetNodes);
         });
       }
+      //console.log(moveNodes);
+      //批量更新本次移动的节点坐标
+      //this.updateCoordinateOfNode(moveNodes);
+      // 节点重叠菜单
+      // const MinX = parseFloat(d.x) - 40;
+      // const MaX = parseFloat(d.x) + 40;
+      // const MinY = parseFloat(d.y) - 40;
+      // const MaY = parseFloat(d.y) + 40;
+      // this.graph.nodes.forEach(item => {
+      //   if (
+      //     MinX < item.x &&
+      //     item.x < MaX &&
+      //     MinY < item.y &&
+      //     item.y < MaY &&
+      //     item.id !== d.uuid
+      //   ) {
+      //     //节点重叠处理逻辑
+      //     console.log("重叠了");
+      //   }
+      // });
     },
+    // 绘制节点
     drawNode(node) {
-      console.log("绘制节点！！")
-      console.log("节点的详细信息如下"+node)
+      console.log("绘制节点！！");
       console.log(JSON.stringify(node));
       const _this = this;
       const gradient = node.enter().append("g");
       const nodeEnter = gradient.append("circle");
-      console.log("nodeEnter",nodeEnter)
+      console.log("nodeEnter", nodeEnter);
       const defs = gradient.append("defs").attr("id", function (d) {
         return "imgdef" + d.uuid;
       });
-      console.log("defsr",defs)
+      console.log("defsr", defs);
       const catpattern = defs
         .append("pattern")
         .attr("id", function (d) {
@@ -863,8 +1002,8 @@ export default {
         .attr("width", 1);
       catpattern
         .append("image")
-        .attr("width", d => d.r * 2)
-        .attr("height", d => d.r * 2)
+        .attr("width", (d) => d.r * 2)
+        .attr("height", (d) => d.r * 2)
         .attr("xlink:href", function (d) {
           if (d.image) {
             if (d.image.indexOf("http") > -1) {
@@ -889,7 +1028,7 @@ export default {
             return "#21bb9e";
           }
         })
-        .attr("class", d => {
+        .attr("class", (d) => {
           return "circle_" + d.uuid;
         });
       nodeEnter.style("opacity", 1);
@@ -900,49 +1039,51 @@ export default {
           return d.name;
         });
       nodeEnter.on("mouseenter", function (d) {
-        if (d.name.indexOf("水库") > 0) {
+        if (typeof d === "string" && d.name.indexOf("水库") > 0) {
           let infoCard = {
             left: d3.event.pageX + 50, //d.x,  //由节点坐标改成鼠标坐标
-            top: d3.event.pageY,  //d.y,    //d.y - 80,
-            show: true
+            top: d3.event.pageY, //d.y,    //d.y - 80,
+            show: true,
           };
           // console.log(d3.event.pageX);
           let data = { domain: _this.domain, nodeId: d.uuid };
           //如果是搜索的节点，要给domain赋值
-          if(data.domain === ''){
-              data.domain = 'ba' //this.treehighest
-            }
+          if (data.domain === "") {
+            data.domain = "ba"; //this.treehighest
+          }
           //获取面板信息
-          kgBuilderApi.getMoreRelationNode(data).then(result => {
-            console.log("面板信息！！")
+          kgBuilderApi.getMoreRelationNode(data).then((result) => {
+            console.log("面板信息！！");
             if (result.code == 200) {
-              console.log(result.data)
-              infoCard.name = d.name
-              infoCard.color = "#000000" //d.color
-              infoCard.yujingLevel = result.data.node[0].yj//预警等级
-              infoCard.river = result.data.node[3].name//所在流域
-              result.data.node.splice(1, 1)  //删除水库名称节点
-              let leveldata = { domain: _this.domain, nodeId: result.data.node[3].uuid };
+              console.log(result.data);
+              infoCard.name = d.name;
+              infoCard.color = "#000000"; //d.color
+              infoCard.yujingLevel = result.data.node[0].yj; //预警等级
+              infoCard.river = result.data.node[3].name; //所在流域
+              result.data.node.splice(1, 1); //删除水库名称节点
+              let leveldata = {
+                domain: _this.domain,
+                nodeId: result.data.node[3].uuid,
+              };
               //如果是搜索的节点，要给domain赋值
-              if(leveldata.domain === ''){
-                leveldata.domain = 'ba' //this.treehighest
+              if (leveldata.domain === "") {
+                leveldata.domain = "ba"; //this.treehighest
               }
-              kgBuilderApi.getMoreRelationNode(leveldata).then(res => {
+              kgBuilderApi.getMoreRelationNode(leveldata).then((res) => {
                 if (res.code == 200) {
                   // console.log(res.data.node,res.data.relationship)
-                  infoCard.waterLevelData = res.data.node
-                  infoCard.waterLevelRelationship = res.data.relationship
-                  infoCard.waterLevelData.splice(1, 1)
-                  infoCard.waterLevelData.splice(6, 1) //删除水库名称节点
-                  infoCard.waterLevelRelationship.splice(6, 1)
+                  infoCard.waterLevelData = res.data.node;
+                  infoCard.waterLevelRelationship = res.data.relationship;
+                  infoCard.waterLevelData.splice(1, 1);
+                  infoCard.waterLevelData.splice(6, 1); //删除水库名称节点
+                  infoCard.waterLevelRelationship.splice(6, 1);
                 }
                 _this.$refs.info_card.init(infoCard);
               });
             }
           });
           // d.preventDefault();
-        }
-        else {
+        } else {
           const aa = d3.select(this)._groups[0][0];
           if (aa.classList.contains("selected")) return;
           d3.select(this)
@@ -958,7 +1099,7 @@ export default {
               domain: _this.domain,
               sourceId: _this.movingLine.from,
               targetId: _this.movingLine.to,
-              ship: ""
+              ship: "",
             };
             d3.select("#drawLineTemp").remove();
             _this.movingLine.defaultEvent(data, _this, d3);
@@ -967,14 +1108,14 @@ export default {
               to: "",
               isDrawing: false,
               defaultEvent: null,
-              container: null
+              container: null,
             };
             //console.log("dddd"+d.uuid)
           }
         }
       });
       nodeEnter.on("mouseleave", function (d) {
-        _this.$refs.info_card.init({ show: false })
+        _this.$refs.info_card.init({ show: false });
         const aa = d3.select(this)._groups[0][0];
         if (aa.classList.contains("selected")) return;
         d3.select(this).style("stroke-width", "0");
@@ -990,7 +1131,7 @@ export default {
         _this.timer = setTimeout(function () {
           d3.select("#richContainer").style("display", "block");
           _this.getNodeDetail(d.uuid, e.pageX + 30, e.pageY);
-        }, 100);//反应时间
+        }, 100); //反应时间
         //todo鼠标放上去只显示相关节点，其他节点和连线隐藏
         d3.selectAll(".node").style("fill-opacity", 0.5);
         var relvantNodeIds = [];
@@ -1044,18 +1185,15 @@ export default {
       });
       //dblclick 会触发两次单击，所以在click里设置定时timer来控制双击
       nodeEnter.on("dblclick", function (d) {
-        clearTimeout(timer)
+        clearTimeout(timer);
         // d3.event.stopPropagation();
         d3.event.preventDefault();
         let data = { domain: _this.domain, nodeId: d.uuid };
         //console.log(data)
-        kgBuilderApi.getMoreRelationNode(data).then(result => {
+        kgBuilderApi.getMoreRelationNode(data).then((result) => {
           if (result.code == 200) {
             //把不存在于画布的节点添加到画布
-            _this.mergeNodeAndLink(
-              result.data.node,
-              result.data.relationship
-            );
+            _this.mergeNodeAndLink(result.data.node, result.data.relationship);
           } else {
             _this.$message.error("展开失败 :" + item.executionTime);
           }
@@ -1064,7 +1202,7 @@ export default {
       let timer = null;
       nodeEnter.on("click", function (d, i) {
         //console.log("node click");
-        clearTimeout(timer)
+        clearTimeout(timer);
         timer = setTimeout(function () {
           _this.svg.selectAll(".buttongroup").style("display", "block");
           d3.selectAll("g[id^='circle_menu_']").style("display", "none");
@@ -1073,8 +1211,7 @@ export default {
           //因为svg也有click事件，这里要阻止冒泡
           // d3.event.stopPropagation();
           // d3.event.preventDefault();
-        }, 200)
-
+        }, 200);
       });
       nodeEnter.call(
         d3
@@ -1210,7 +1347,7 @@ export default {
         .attr("id", function (d) {
           return "invis_" + d.lk.uuid;
         })
-        .attr("class", d => {
+        .attr("class", (d) => {
           return "Links_" + d.lk.uuid;
         })
         .attr("fill", "none")
@@ -1232,7 +1369,7 @@ export default {
           left: e.pageX - 30,
           top: e.pageY - 30,
           show: true,
-          sdata: _this.selectNode
+          sdata: _this.selectNode,
         };
         _this.$refs.menu_link.init(link);
       });
@@ -1241,13 +1378,13 @@ export default {
         _this.editLinkState = false;
         d3.select(".Links_" + d.lk.uuid)
           .style("stroke-width", 1.5)
-          .attr("stroke", d => {
+          .attr("stroke", (d) => {
             if (d.color) {
               return d.color;
             }
             return "#FBB613";
           })
-          .attr("marker-end", d => {
+          .attr("marker-end", (d) => {
             return "url(#arrow)";
           });
       });
@@ -1291,7 +1428,7 @@ export default {
           left: e.pageX - 30,
           top: e.pageY - 30,
           show: true,
-          sdata: _this.selectNode
+          sdata: _this.selectNode,
         };
         _this.$refs.menu_link.init(link);
       });
@@ -1343,11 +1480,13 @@ export default {
           _this.initData.links.push(m);
         }
       });
-      var svg = d3.select('svg');
-      var width = svg.attr('width');
-      var height = svg.attr('height');
-      var forceSimulation = d3.forceSimulation(_this.initData.nodes)
-        .force("link", d3.forceLink().id(d => d.uuid))
+      var svg = d3.select("svg");
+      var width = svg.attr("width");
+      var height = svg.attr("height");
+      var forceSimulation = d3.forceSimulation(_this.initData.nodes).force(
+        "link",
+        d3.forceLink().id((d) => d.uuid)
+      );
       //  .force("charge", d3.forceManyBody().strength(-100))
       //  .force("center", d3.forceCenter(svg.node().parentElement.clientWidth / 2, svg.node().parentElement.clientHeight / 2));
       //forceSimulation.start()
@@ -1357,7 +1496,7 @@ export default {
       //   .y(height/2)//设置y坐标
       //console.log("33")
     },
-  }
+  },
 };
 </script>
 
